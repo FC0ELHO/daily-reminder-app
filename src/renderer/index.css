@@ -1,0 +1,322 @@
+/* index.css */
+:root {
+  --primary: #5e35b1;
+  --primary-light: #9162e4;
+  --primary-dark: #4527a0;
+  --secondary: #00bfa5;
+  --background: #f5f7fa;
+  --surface: #ffffff;
+  --on-surface: #263238;
+  --today: #e3f2fd;
+  --error: #f44336;
+  --warning: #ff9800;
+  --priority-low: #dcdf00; /* Yellow */
+  --priority-medium: #ff9800; /* Orange */
+  --priority-high: #a52019; /* Red */
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+  background: var(--background);
+  color: var(--on-surface);
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Barra de título */
+.app-header {
+  background: var(--primary);
+  color: white;
+  height: 60px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  -webkit-app-region: drag;
+  position: relative;
+  z-index: 10;
+}
+
+.user-greeting {
+  font-size: 1.1em;
+  font-weight: 500;
+  padding-left: 20px;
+}
+
+.date-display-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+  -webkit-app-region: no-drag; /* para que no arrastre la ventana */
+}
+
+.current-date {
+  font-size: 1.4em;
+  line-height: 1;
+}
+
+.current-weekday {
+  font-size: 0.8em;
+  opacity: 0.8;
+}
+
+.header-controls {
+  display: flex;
+  -webkit-app-region: no-drag;
+}
+
+.header-btn {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.2em;
+  padding: 10px 15px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.header-btn:hover {
+  background-color: var(--primary-light);
+}
+
+.header-btn:active {
+  background-color: var(--primary-dark);
+}
+
+/* Contenido principal */
+.main-content {
+  flex-grow: 1;
+  display: flex;
+  padding: 20px;
+  gap: 20px;
+  overflow-y: auto; /* Permite scroll si el contenido es demasiado grande */
+  position: relative;
+  z-index: 1; /* Asegura que el contenido esté sobre el fondo */
+}
+
+/* Sección de Tareas */
+.tasks-section {
+  background: var(--surface);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  min-width: 300px;
+  flex: 1; /* Permite que las secciones ocupen espacio disponible */
+}
+
+.tasks-section h2 {
+  font-size: 1.3em;
+  color: var(--primary-dark);
+  margin-bottom: 15px;
+  border-bottom: 2px solid var(--today);
+  padding-bottom: 10px;
+}
+
+.task-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex-grow: 1;
+  overflow-y: auto; /* Scroll para listas de tareas individuales */
+}
+
+/* Estilo de cada tarea */
+.task-item {
+  background-color: var(--today);
+  border-radius: 6px;
+  padding: 12px 15px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  position: relative; /* Para posicionar los botones de acción */
+}
+
+.task-item h3 {
+  font-size: 1.1em;
+  color: var(--on-surface);
+  margin-bottom: 5px;
+}
+
+.task-item .task-time {
+  font-size: 0.85em;
+  color: #555;
+  margin-bottom: 8px;
+}
+
+.task-item .task-description {
+  font-size: 0.9em;
+  color: #444;
+  margin-bottom: 10px;
+  word-wrap: break-word; /* Para que el texto largo se ajuste */
+}
+
+.task-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 5px;
+}
+
+/* Estilos para tareas vencidas */
+.task-item.task-overdue {
+    background-color: #ffe0b2; /* Un naranja claro */
+    border-left: 5px solid var(--warning); /* Borde naranja para indicar alerta */
+    opacity: 0.8; /* Ligeramente más tenue para indicar que ya pasó */
+}
+
+.task-item.task-overdue h3,
+.task-item.task-overdue p,
+.task-item.task-overdue span {
+    color: #b71c1c; /* Texto en rojo oscuro */
+    /* text-decoration: line-through; si quieres que se vea tachado */
+}
+
+/* Opcional: Estilo para tareas completadas */
+.task-item.task-completed {
+    background-color: #e0f2f7; /* Un azul muy claro */
+    border-left: 5px solid #00c853; /* Borde verde para completado */
+    opacity: 0.6;
+    text-decoration: line-through; /* Tachado para indicar completada */
+}
+
+.task-item.task-completed h3,
+.task-item.task-completed p,
+.task-item.task-completed span {
+    color: #424242; /* Color de texto más tenue */
+}
+
+/* Estilos para los botones de acción dentro de las tareas */
+.action-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2em;
+    padding: 5px;
+    margin-left: 5px;
+    color: #666;
+    transition: color 0.2s ease;
+}
+
+.action-button:hover {
+    color: var(--primary); /* Cambia al color primario al pasar el ratón */
+}
+
+.complete-button:hover {
+    color: #4caf50; /* Verde al pasar el ratón por el botón de completar */
+}
+
+.delete-button:hover {
+    color: var(--error); /* Rojo al pasar el ratón por el botón de eliminar */
+}
+
+.edit-button:hover {
+    color: var(--secondary); /* Color secundario al pasar el ratón por el botón de editar */
+}
+
+
+/* Pie de página/Barra de acciones inferior */
+.app-footer {
+  background: var(--primary);
+  color: white;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  -webkit-app-region: drag; /* Para arrastrar desde el footer también */
+}
+
+.add-task-btn {
+  -webkit-app-region: no-drag;
+  background-color: var(--secondary);
+  color: white;
+  border: none;
+  border-radius: 25px;
+  padding: 10px 25px;
+  font-size: 1em;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.add-task-btn:hover {
+  background-color: #008f7d; /* Un tono más oscuro del secundario */
+  transform: translateY(-2px);
+}
+
+.add-task-btn:active {
+  transform: translateY(0);
+}
+
+.empty-message {
+    font-style: italic;
+    color: #777;
+    text-align: center;
+    padding: 20px;
+    display: flex; /* Mostrar por defecto para el texto, ocultar por JS si hay tareas */
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Estilos para prioridades */
+.task-priority {
+    font-size: 0.8em;
+    padding: 2px 6px;
+    border-radius: 10px;
+    background: #eee;
+    display: inline-block;
+    margin-top: 5px;
+}
+
+.task-priority.low {
+    background-color: var(--priority-low);
+    color: #333;
+}
+
+.task-priority.medium {
+    background-color: var(--priority-medium);
+    color: white;
+}
+
+.task-priority.high {
+    background-color: var(--priority-high);
+    color: white;
+}
+
+/* Mejorar visualización de tareas vencidas */
+.task-overdue {
+    border-left: 4px solid var(--warning);
+    animation: pulseWarning 1.5s infinite;
+}
+
+@keyframes pulseWarning {
+    0% { opacity: 1; }
+    50% { opacity: 0.8; }
+    100% { opacity: 1; }
+}
+
+@keyframes soundPulse {
+    0% { box-shadow: 0 0 0 0 rgba(52, 152, 219, 0.7); }
+    70% { box-shadow: 0 0 0 10px rgba(52, 152, 219, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(52, 152, 219, 0); }
+}
+
+.playing-sound {
+    animation: soundPulse 1s;
+}

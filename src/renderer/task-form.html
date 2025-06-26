@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Añadir/Editar Tarea</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="index.css"> 
+    <style>
+        /* Estilos específicos para el formulario, puedes ajustarlos */
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--background); /* Usar el color de fondo de index.css */
+            color: var(--on-surface);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            -webkit-user-select: none;
+            padding: 15px; /* Espaciado interno */
+        }
+        .form-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            -webkit-app-region: drag; /* Permite arrastrar desde el header */
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 15px;
+        }
+        .form-header h2 {
+            font-size: 1.3em;
+            color: var(--primary);
+            -webkit-app-region: no-drag; /* Para que el texto no arrastre */
+        }
+        .form-header button {
+            -webkit-app-region: no-drag;
+            background: none;
+            border: none;
+            font-size: 1.2em;
+            cursor: pointer;
+            color: var(--on-surface);
+            transition: color 0.2s;
+        }
+        .form-header button:hover {
+            color: var(--error);
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            flex-grow: 1; /* Permitir que el formulario ocupe espacio restante */
+            overflow-y: auto; /* Para desplazamiento si el contenido es mucho */
+            padding-right: 5px; /* Pequeño padding para el scrollbar */
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        label {
+            font-size: 0.9em;
+            color: var(--on-surface);
+            font-weight: 500;
+        }
+        input[type="text"],
+        input[type="date"],
+        input[type="time"],
+        textarea,
+        select {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1em;
+            width: 100%; /* Ocupar todo el ancho disponible */
+            box-sizing: border-box; /* Incluir padding y border en el ancho */
+            background-color: var(--surface);
+            color: var(--on-surface);
+        }
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        .form-actions {
+            display: flex;
+            justify-content: flex-end; /* Alinear botones a la derecha */
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .form-actions button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 500;
+            transition: background-color 0.2s, color 0.2s;
+        }
+        .form-actions button.cancel-btn {
+            background-color: #f0f0f0;
+            color: #555;
+        }
+        .form-actions button.cancel-btn:hover {
+            background-color: #e0e0e0;
+        }
+        .form-actions button.save-btn {
+            background-color: var(--primary);
+            color: white;
+        }
+        .form-actions button.save-btn:hover {
+            background-color: var(--primary-dark);
+        }
+    </style>
+</head>
+<body>
+    <div class="form-header">
+        <h2 id="form-title">Añadir Nueva Tarea</h2>
+        <button id="close-form-btn"><i class="fas fa-times"></i></button>
+    </div>
+
+    <form id="task-form">
+        <div class="form-group">
+            <label for="task-title">Título:</label>
+            <input type="text" id="task-title" placeholder="Ej: Comprar víveres" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="task-description">Descripción:</label>
+            <textarea id="task-description" placeholder="Ej: Leche, pan, huevos, café"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="task-date">Fecha:</label>
+            <input type="date" id="task-date" required>
+        </div>
+
+        <div class="form-group">
+            <label for="task-time">Hora:</label>
+            <input type="time" id="task-time" required>
+        </div>
+
+        <div class="form-group">
+            <label for="task-priority">Prioridad:</label>
+            <select id="task-priority">
+                <option value="low">Baja</option>
+                <option value="medium">Media</option>
+                <option value="high">Alta</option>
+            </select>
+        </div>
+
+        <div class="form-actions">
+            <button type="button" class="cancel-btn" id="cancel-task-btn">Cancelar</button>
+            <button type="submit" class="save-btn" id="save-task-btn">Guardar Tarea</button>
+        </div>
+    </form>
+    <script src="./task-form-renderer.js"></script> 
+</body>
+</html>

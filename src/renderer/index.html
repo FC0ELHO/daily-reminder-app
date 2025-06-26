@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daily Reminder</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="index.css"> </head>
+<body>
+  <div class="app-header" id="draggable-header">
+    <span class="user-greeting" style="-webkit-app-region: no-drag;">Hola Usuario</span>
+
+    <div class="date-display-center">
+      <div class="current-date" id="current-date"></div>
+      <div class="current-weekday" id="current-weekday"></div>
+    </div>
+
+    <div class="header-controls" style="-webkit-app-region: no-drag;">
+      <button class="header-btn" id="minimize-btn" title="Minimizar">
+        <i class="fas fa-minus"></i>
+      </button>
+      <button class="header-btn" id="maximize-btn" title="Maximizar">
+        <i class="far fa-square"></i>
+      </button>
+      <button class="header-btn" id="close-btn" title="Cerrar">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+  </div>
+
+  <main class="main-content">
+    <section class="task-section">
+      <h2>Tareas del día</h2>
+      <div class="task-list" id="today-tasks-container">
+        </div>
+      <p class="empty-message" id="no-today-tasks">¡No tienes tareas para hoy!</p>
+    </section>
+
+    <section class="task-section">
+      <h2>Próximas actividades</h2>
+      <div class="task-list" id="upcoming-tasks-container">
+        </div>
+      <p class="empty-message" id="no-upcoming-tasks">No hay actividades próximas.</p>
+    </section>
+
+    <section class="task-section">
+      <h2>Tareas Vencidas</h2>
+      <div class="task-list" id="overdue-tasks-container">
+        </div>
+      <p class="empty-message" id="no-overdue-tasks">¡Excelente! No tienes tareas vencidas.</p>
+    </section>
+  </main>
+
+  <div class="footer-buttons">
+    <button class="add-task-btn" id="add-task-button">
+      <i class="fas fa-plus"></i> Añadir Nueva Tarea
+    </button>
+  </div>
+
+  <script src="index-renderer.js"></script> </body>
+</html>
