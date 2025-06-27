@@ -1,17 +1,15 @@
-// src/main/ipcHandlers.js
-const { ipcMain, BrowserWindow } = require('electron');
+const { ipcMain, BrowserWindow, screen } = require('electron');
 const path = require('path');
 const { getCategorizedTasks, addTask, updateTask, deleteTask } = require('./database');
 const { removeNotificationForTask, checkReminders } = require('./notifications');
-const { STICKY_WINDOW_DEFAULTS } = require('./config');
+const { STICKY_WINDOW_DEFAULTS, WINDOW_DEFAULTS } = require('./config');
 
-let mainWindowRef; // Referencia a la ventana principal
+let mainWindowRef;
 
 function setMainWindowForHandlers(win) {
   mainWindowRef = win;
 }
 
-// NUEVA FUNCIÓN: Encapsula la lógica para crear la ventana de formulario de tarea
 function createStickyWindow(taskId = null) {
   const stickyWindow = new BrowserWindow({
     ...STICKY_WINDOW_DEFAULTS,
@@ -20,45 +18,52 @@ function createStickyWindow(taskId = null) {
       contextIsolation: true,
       nodeIntegration: false,
     },
-    show: false // Oculta hasta que esté lista para mostrar
+    show: false
   });
 
   stickyWindow.loadFile(path.join(__dirname, '../renderer/task-form.html'));
 
   stickyWindow.once('ready-to-show', () => {
     if (taskId) {
-      // Envía el ID de la tarea a la ventana del formulario si es para edición
       stickyWindow.webContents.send('load-task-for-edit', taskId);
     }
     stickyWindow.show();
   });
-
-  // Opcional: Para gestionar múltiples ventanas sticky si fuera necesario
-  // stickyWindows.add(stickyWindow);
-  // stickyWindow.on('closed', () => stickyWindows.delete(stickyWindow));
 }
 
 
 function setupIpcHandlers() {
-  // Manejadores para el control de ventana principal
-  // CAMBIO: Nombres de canales IPC para que coincidan con los del renderer (después de ajustar preload.js)
-  ipcMain.on('close-window', () => { // Era 'close-app'
+  ipcMain.on('close-window', () => {
     if (mainWindowRef) mainWindowRef.close();
   });
-  ipcMain.on('minimize-window', () => { // Era 'minimize-app'
+  ipcMain.on('minimize-window', () => {
     if (mainWindowRef) mainWindowRef.minimize();
   });
-  ipcMain.on('maximize-window', () => { // Era 'maximize-app'
+  ipcMain.on('maximize-window', () => {
     if (mainWindowRef) {
       if (mainWindowRef.isMaximized()) {
         mainWindowRef.unmaximize();
+        const primaryDisplay = screen.getPrimaryDisplay();
+        const { width: screenWidth, height: screenHeight } = primaryDisplay.workAreaSize;
+
+        const defaultWidth = WINDOW_DEFAULTS.width;
+        const defaultHeight = WINDOW_DEFAULTS.height;
+
+        const x = Math.round(screenWidth / 2 - defaultWidth / 2);
+        const y = Math.round(screenHeight / 2 - defaultHeight / 2);
+
+        mainWindowRef.setBounds({
+          x: x,
+          y: y,
+          width: defaultWidth,
+          height: defaultHeight
+        }, true);
       } else {
         mainWindowRef.maximize();
       }
     }
   });
 
-  // Mover ventana (lógica de arrastre desde el renderer)
   ipcMain.on('move-window', (event, { x, y, isMoving }) => {
     if (isMoving && mainWindowRef && !mainWindowRef.isDestroyed()) {
       const [currentX, currentY] = mainWindowRef.getPosition();
@@ -66,7 +71,6 @@ function setupIpcHandlers() {
     }
   });
 
-  // API para obtener tareas (invocado desde renderer)
   ipcMain.handle('get-tasks', async () => {
     try {
       const tasks = await getCategorizedTasks();
@@ -77,12 +81,11 @@ function setupIpcHandlers() {
     }
   });
 
-  // API para añadir tarea (invocado desde renderer)
   ipcMain.handle('add-task', async (_, taskData) => {
     try {
       const newTask = await addTask(taskData);
       if (mainWindowRef && !mainWindowRef.isDestroyed()) {
-        mainWindowRef.webContents.send('tasks-updated'); // Notificar al renderer principal
+        mainWindowRef.webContents.send('tasks-updated');
       }
       checkReminders(); // Actualizar recordatorios
       return { success: true, data: newTask };
@@ -92,53 +95,48 @@ function setupIpcHandlers() {
     }
   });
 
-  // API para actualizar tarea (invocado desde renderer)
   ipcMain.handle('update-task', async (_, taskId, updatedData) => {
     try {
       const updatedTask = await updateTask(taskId, updatedData);
       if (updatedTask) {
         if (mainWindowRef && !mainWindowRef.isDestroyed()) {
-          mainWindowRef.webContents.send('tasks-updated'); // Notificar al renderer principal
+          mainWindowRef.webContents.send('tasks-updated');
         }
         checkReminders(); // Actualizar recordatorios
         return { success: true, data: updatedTask };
       }
-      return { success: false, message: 'Task not found' };
+      return { success: false, message: 'Tarea no encontrada' };
     } catch (error) {
       console.error('Error al actualizar tarea:', error);
       return { success: false, message: error.message };
     }
   });
 
-  // API para eliminar tarea (invocado desde renderer)
   ipcMain.handle('delete-task', async (_, taskId) => {
     try {
       const deleted = await deleteTask(taskId);
       if (deleted) {
         removeNotificationForTask(taskId); // Limpiar notificación
         if (mainWindowRef && !mainWindowRef.isDestroyed()) {
-          mainWindowRef.webContents.send('tasks-updated'); // Notificar al renderer principal
+          mainWindowRef.webContents.send('tasks-updated');
         }
         checkReminders(); // Recalcular overlays y recordatorios
         return { success: true };
       }
-      return { success: false, message: 'Task not found' };
+      return { success: false, message: 'Tarea no encontrada' };
     } catch (error) {
       console.error('Error al eliminar tarea:', error);
       return { success: false, message: error.message };
     }
   });
 
-  // IPC Handler para que el renderer pueda crear una ventana de tarea.
-  // Ahora, simplemente llamamos a la función 'createStickyWindow' que hemos definido arriba.
   ipcMain.on('create-sticky-window', (event, taskId = null) => {
-    createStickyWindow(taskId); // Reutiliza la función centralizada
+    createStickyWindow(taskId);
   });
 }
 
-// EXPORTAR la función createStickyWindow para que otros módulos (como index.js y tray.js) puedan usarla.
 module.exports = {
   setupIpcHandlers,
   setMainWindowForHandlers,
-  createStickyWindow // ¡IMPORTANTE: EXPORTAR ESTA FUNCIÓN!
+  createStickyWindow
 };

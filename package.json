@@ -17,6 +17,7 @@
   "dependencies": {
     "electron-squirrel-startup": "^1.0.1",
     "lowdb": "^7.0.1",
+    "play-sound": "^1.1.6",
     "uuid": "^11.1.0"
   },
   "devDependencies": {
