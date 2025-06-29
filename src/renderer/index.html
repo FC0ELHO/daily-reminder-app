@@ -1,3 +1,4 @@
+<!-- ✅ index.html actualizado -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -6,28 +7,22 @@
   <title>Daily Reminder</title>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-  <link rel="stylesheet" href="index.css"> </head>
+  <link rel="stylesheet" href="index.css">
   <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;600&display=swap" rel="stylesheet">
-    <style>
-      body {
-        font-family: 'Raleway', sans-serif;
-      }
-    </style>
+  <style>
+    body { font-family: 'Raleway', sans-serif; }
+  </style>
+</head>
 <body>
   <div class="app-header" id="draggable-header">
-
-    <!--<span class="user-greeting" style="-webkit-app-region: no-drag;"><img class="avatar" src="https://i.pravatar.cc/40" alt="Avatar"> Hola Usuario</span-->
-
     <div class="user-greeting" style="-webkit-app-region: no-drag;">
       <img class="avatar" src="https://i.pravatar.cc/40" alt="Avatar"> 
       <span class="greeting-text">Hola Usuario</span>
     </div>
-
     <div class="date-display-center">
       <div class="current-date" id="current-date"></div>
       <div class="current-weekday" id="current-weekday"></div>
     </div>
-
     <div class="header-controls" style="-webkit-app-region: no-drag;">
       <button class="header-btn" id="minimize-btn" title="Minimizar">
         <i class="fas fa-minus"></i>
@@ -43,46 +38,48 @@
 
   <div class="dashboard">
     <main class="main-content">
-      <section class="tasks-column today">Hoy
+      <section class="tasks-column today">
         <section class="task-section">
           <h2>Tareas del día</h2>
-          <div class="task-list" id="today-tasks-container">
-            </div>
-            <p class="empty-message" id="no-today-tasks">¡No tienes tareas para hoy!</p>
+          <div class="task-list" id="today-tasks-container"></div>
+          <p class="empty-message" id="no-today-tasks">¡No tienes tareas para hoy!</p>
         </section>
       </section>
-      <section class="tasks-column upcoming">Próximas
-              <section class="task-section">
-                <h2>Próximas actividades</h2>
-                <div class="task-list" id="upcoming-tasks-container">
-                  </div>
-                <p class="empty-message" id="no-upcoming-tasks">No hay actividades próximas.</p>
-              </section>
+      <section class="tasks-column upcoming">
+        <section class="task-section">
+          <h2>Próximas actividades</h2>
+          <div class="task-list" id="upcoming-tasks-container"></div>
+          <p class="empty-message" id="no-upcoming-tasks">No hay actividades próximas.</p>
+        </section>
       </section>
       <section class="tasks-column others">
-          Vencidas + Notas
-              <section class="task-section">
-      <h2>Tareas Vencidas</h2>
-      <div class="task-list" id="overdue-tasks-container">
-        </div>
-      <p class="empty-message" id="no-overdue-tasks">¡Excelente! No tienes tareas vencidas.</p>
-    </section>
-          <div class="empty-state">
-            <img src="" alt="Sin tareas"> ../assets/img/-Decrease_3.jpg
+        <section class="task-section">
+          <h2>Tareas Vencidas</h2>
+          <div class="task-list" id="overdue-tasks-container"></div>
+          <p class="empty-message" id="no-overdue-tasks">¡Excelente! No tienes tareas vencidas.</p>
+        </section>
+        <div class="empty-state">
+          <img src="./tareas.png" alt="Sin tareas" style="width: 120px; opacity: 0.7; margin-bottom: 10px;">
           <p>No hay tareas por el momento. ¡Disfruta tu día! 🌤️</p>
-      </div>
-
+        </div>
       </section>
     </main>
   </div>
-</main>
 
-
-  <div class="footer-buttons">
-    <button class="add-task-btn" id="add-task-button">
-      <i class="fas fa-plus"></i> Añadir Nueva Tarea
-    </button>
+  <button class="add-task-btn" id="add-task-button">
+    <i class="fas fa-plus"></i> Añadir Nueva Tarea
+  </button>
+  <div class="weekly-selector">
+    <button class="day-btn" data-offset="-3">Lun</button>
+    <button class="day-btn" data-offset="-2">Mar</button>
+    <button class="day-btn" data-offset="-1">Mié</button>
+    <button class="day-btn" data-offset="0" id="today-btn">Hoy</button>
+    <button class="day-btn" data-offset="1">Jue</button>
+    <button class="day-btn" data-offset="2">Vie</button>
+    <button class="day-btn" data-offset="3">Sáb</button>
   </div>
 
-  <script src="index-renderer.js"></script> </body>
+
+  <script src="index-renderer.js"></script>
+</body>
 </html>

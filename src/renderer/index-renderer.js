@@ -1,30 +1,29 @@
 // src/renderer/index-renderer.js
-console.log('index-renderer.js loaded.'); // <-- Aquí
+console.log('index-renderer.js loaded.');
+
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('DOMContentLoaded fired in renderer.'); // <-- Aquí
+    console.log('DOMContentLoaded fired in renderer.');
     updateCurrentDate();
     loadTasks();
 
     document.getElementById('close-btn').addEventListener('click', () => {
-        console.log('Close A.'); // <-- Aquí
         window.electronAPI.closeWindow();
     });
     document.getElementById('minimize-btn').addEventListener('click', () => {
-        console.log('Close A.'); // <-- Aquí
         window.electronAPI.minimizeWindow();
     });
     document.getElementById('maximize-btn').addEventListener('click', () => {
-        console.log('Close A.'); // <-- Aquí
         window.electronAPI.maximizeWindow();
     });
 
     document.getElementById('add-task-button').addEventListener('click', () => {
-        console.log('Close A.'); // <-- Aquí
         window.electronAPI.createStickyWindow();
     });
 
     window.electronAPI.onTasksUpdated(() => {
         console.log('Tareas actualizadas, recargando dashboard...');
+        const container = document.getElementById('today-tasks-container');
+        if (container) container.innerHTML = '';
         loadTasks();
     });
 
@@ -55,6 +54,45 @@ document.addEventListener('DOMContentLoaded', () => {
             window.electronAPI.moveWindow({ x: deltaX, y: deltaY, isMoving: true });
         }
     });
+
+    // Nuevo: selector semanal
+    const dayButtons = document.querySelectorAll('.day-btn');
+    dayButtons.forEach(btn => {
+        btn.addEventListener('click', async () => {
+            dayButtons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            const offset = parseInt(btn.dataset.offset);
+            const targetDate = new Date();
+            targetDate.setDate(targetDate.getDate() + offset);
+
+            const response = await window.electronAPI.getTasks();
+            if (!response.success) return;
+
+            const allTasks = [
+                ...response.data.today,
+                ...response.data.upcoming,
+                ...response.data.overdue
+            ];
+
+            const filtered = allTasks.filter(task => {
+                const taskDate = new Date(task.date);
+                return taskDate.toDateString() === targetDate.toDateString();
+            });
+
+            const container = document.getElementById('today-tasks-container');
+            container.innerHTML = '';
+            if (filtered.length > 0) {
+                filtered.forEach(task => container.appendChild(createTaskElement(task)));
+                document.getElementById('no-today-tasks').style.display = 'none';
+            } else {
+                document.getElementById('no-today-tasks').style.display = 'flex';
+            }
+        });
+    });
+
+    const todayBtn = document.getElementById('today-btn');
+    if (todayBtn) todayBtn.classList.add('active');
 });
 
 function updateCurrentDate() {
@@ -79,10 +117,8 @@ function createTaskElement(task) {
 
     if (task.completed) {
         taskElement.classList.add('task-completed');
-    } else {
-        if (taskDateTime < now) {
-            taskElement.classList.add('task-overdue');
-        }
+    } else if (taskDateTime < now) {
+        taskElement.classList.add('task-overdue');
     }
 
     const formattedTime = task.time.substring(0, 5);
@@ -94,7 +130,7 @@ function createTaskElement(task) {
                 <span class="task-time">${formattedTime}</span>
             </div>
             ${task.description ? `<p class="task-description">${task.description}</p>` : ''}
-            ${task.priority ? `<span class="task-priority ${task.priority}">Prioridad: ${task.priority}</span>` : ''}
+            ${task.priority ? `<span class="task-priority ${task.priority}">Prioridad: ${task.priority.charAt(0).toUpperCase() + task.priority.slice(1)}</span>` : ''}
         </div>
         <div class="task-actions">
             <button class="action-button complete-button" title="Marcar como completada">
@@ -119,14 +155,18 @@ function createTaskElement(task) {
     });
 
     taskElement.querySelector('.delete-button').addEventListener('click', async () => {
-        if (confirm(`¿Eliminar la tarea "${task.title}"?`)) {
-            try {
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: `Eliminar la tarea "${task.title}"`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar'
+        }).then(async (result) => {
+            if (result.isConfirmed) {
                 await window.electronAPI.deleteTask(task.id);
-            } catch (error) {
-                console.error('Error al eliminar tarea:', error);
-                alert('Error al eliminar la tarea');
             }
-        }
+        });
     });
 
     taskElement.querySelector('.edit-button').addEventListener('click', () => {
@@ -147,12 +187,9 @@ async function loadTasks() {
 
     try {
         const response = await window.electronAPI.getTasks();
-        console.log('Close API.'); // <-- Aquí
-        if (!response.success) {
-            throw new Error(response.message);
-        }
-        const tasks = response.data;
+        if (!response.success) throw new Error(response.message);
 
+        const tasks = response.data;
         let hasToday = false;
         let hasUpcoming = false;
         let hasOverdue = false;
@@ -161,12 +198,10 @@ async function loadTasks() {
             todayContainer.appendChild(createTaskElement(task));
             hasToday = true;
         });
-
         tasks.upcoming.forEach(task => {
             upcomingContainer.appendChild(createTaskElement(task));
             hasUpcoming = true;
         });
-
         tasks.overdue.forEach(task => {
             overdueContainer.appendChild(createTaskElement(task));
             hasOverdue = true;

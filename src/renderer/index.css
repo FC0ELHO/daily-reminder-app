@@ -107,13 +107,14 @@ body {
 }
 
 .tasks-column {
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.8);
   backdrop-filter: blur(8px);
   border-radius: 1rem;
-  padding: 1rem;
+  padding: 1.5rem 1.2rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   flex: 1 1 300px;
-  max-width: 400px;
+  max-width: 32%;
+  min-width: 280px;
   transition: all 0.3s ease;
 }
 
@@ -194,12 +195,15 @@ body {
 .main-content {
   flex-grow: 1;
   display: flex;
-  padding: 20px;
-  gap: 20px;
-  overflow-y: auto; /* Permite scroll si el contenido es demasiado grande */
-  position: relative;
-  z-index: 1; /* Asegura que el contenido esté sobre el fondo */
+  justify-content: center;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 30px;
+  padding: 40px 20px 120px; /* padding inferior para evitar que se monte con el selector */
+  max-width: 1400px;
+  margin: 0 auto;
 }
+
 
 /* Sección de Tareas */
 .tasks-section {
@@ -349,6 +353,10 @@ body {
   display: flex;
   align-items: center;
   gap: 8px;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 100;
 }
 
 .add-task-btn:hover {
@@ -416,4 +424,62 @@ body {
 
 .playing-sound {
     animation: soundPulse 1s;
+}
+
+.weekly-selector {
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  background: #ffffffdd;
+  padding: 10px 15px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(6px);
+  z-index: 90;
+  max-width: 90vw;
+}
+
+
+.day-btn {
+  background-color: #e0e0e0;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.day-btn:hover {
+  background-color: #d0d0d0;
+}
+
+.day-btn.active {
+  background-color: var(--primary);
+  color: white;
+}
+
+
+.day-btn {
+  background-color: #e0e0e0;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.day-btn:hover {
+  background-color: #d0d0d0;
+}
+
+.day-btn.active {
+  background-color: var(--primary);
+  color: white;
 }
